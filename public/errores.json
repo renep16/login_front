@@ -1,0 +1,7 @@
+[
+  {"code":200, "text": "Todo bien"},
+  {"code":209, "text":"Usuario o clave inválido"},
+  {"code":210, "text":"Usuario inactivo"},
+  {"code":400, "text":"Faltan datos"}, 
+  {"code":404, "text":"No encontrado"}      
+]

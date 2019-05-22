@@ -36,7 +36,7 @@ export default class Login extends Component {
         [target.name]: target.value
       })
     }
-    if (this.state.usuario !== '' && this.state.clave !== ''){
+    if (this.state.usuario !== '' && this.state.clave !== '' && !this.state.cargando){
       this.setState({ disabled: false });
     }else{
       this.setState({ disabled: true });
@@ -105,6 +105,7 @@ export default class Login extends Component {
                       autoFocus
                       value={this.state.usuario}
                       onChange={this.handleChange}
+                      disabled={this.state.cargando}
                     />
                     <label htmlFor="inputUsuario">Usuario</label>
                   </div>
@@ -119,6 +120,7 @@ export default class Login extends Component {
                       required
                       value={this.state.clave}
                       onChange={this.handleChange}
+                      disabled={this.state.cargando}
                     />
                     <label htmlFor="inputClave">Clave</label>
                   </div>
@@ -132,6 +134,7 @@ export default class Login extends Component {
                       value="1"
                       onChange={this.handleChange}
                       checked={this.state.recordar_clave}
+                      disabled={this.state.cargando}
                     />
                     <label className="custom-control-label" htmlFor="customCheck1">Recordar clave</label>
                   </div>

@@ -1,31 +1,70 @@
 import React, { Component } from 'react';
-// import {
-//   Collapse,
-//   Navbar,
-//   NavbarToggler,
-//   NavbarBrand,
-//   Nav,
-//   NavItem,
-//   NavLink,
-//   UncontrolledDropdown,
-//   DropdownToggle,
-//   DropdownMenu,
-//   DropdownItem
-// } from 'reactstrap';
+import { FiLogOut } from "react-icons/fi";
 
 export default class Menu extends Component {
   constructor(props) {
     super(props);
 
     this.cerrarSesion = this.cerrarSesion.bind(this);
+    this.crear_html = this.crear_html.bind(this);
   }
-  
-  cerrarSesion(e){
+
+  cerrarSesion(e) {
     e.preventDefault();
     this.props.cerrarSesion();
   }
 
+  crear_html(lista, padre = false) {
+    let html = null;
+    if (lista === null && lista === undefined) {
+      return html;
+    }
+    html = lista.map(element => {
+      if (element['hijos']) {
+        const funcion = (element['funcion']) ? element['funcion'] : '#drop';
+        let hijos = this.crear_html(element['hijos'][0], true);
+        return (
+          <li className="nav-item dropdown" key={element['idopcion']}>
+            <a className={'nav-link dropdown-toggle' + (element['activo'] ? '' : ' disabled')} href={funcion} id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {element['nombre']}
+            </a>
+            <div className="dropdown-menu" aria-labelledby="navbarDropdown">
+              {hijos}
+            </div>
+          </li>
+        )
+      } else {
+        if (element['funcion']) {
+          if (!padre) {
+            return (
+              <li className="nav-item" key={element['idopcion']}>
+                <a className={'nav-link' + (element['activo'] ? '' : ' disabled')} href={element['funcion']} >{element['nombre']}</a>
+              </li>
+            )
+          } else {
+
+            return (
+              <a className={'dropdown-item' + (element['activo'] ? '' : ' disabled')} href={element['funcion']} key={element['idopcion']}>{element['nombre']}</a>
+            )
+          }
+        } else {
+          return (
+            <li className="nav-item" key={element['idopcion']}>
+              <span className="navbar-text">
+                {element['nombre']}
+              </span>
+            </li>
+
+          )
+        }
+      }
+    });
+    return html;
+  }
+
   render() {
+    const menu_list = this.props.menu;
+    const menu_html = this.crear_html(menu_list, false);
     return (
       <div >
         <nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -36,24 +75,12 @@ export default class Menu extends Component {
 
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav mr-auto">
-              {/* <li className="nav-item active">
-                <a className="nav-link" href="/">Home <span className="sr-only">(current)</span></a>
-              </li> */}
-              <li className="nav-item">
-                <a className="nav-link" onClick={this.cerrarSesion} href="logout" >Cerrar Sesión</a>
-              </li>
-              {/* <li className="nav-item dropdown">
-                <a className="nav-link dropdown-toggle" href="/" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  Dropdown
-                </a>
-                <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <a className="dropdown-item" href="/">Action</a>
-                  <a className="dropdown-item" href="/">Another action</a>
-                  <div className="dropdown-divider"></div>
-                  <a className="dropdown-item" href="/">Something else here</a>
-                </div>
-              </li> */}
+              {menu_html}
+
             </ul>
+
+            <a className="nav-link" onClick={this.cerrarSesion} href="logout" title="Cerrar Sesión">Cerrar Sesión  <FiLogOut /></a>
+
           </div>
         </nav>
       </div>

@@ -1,0 +1,10 @@
+[{"idusuario":1,"usuario":"hshepperd0","nombre":"Hamilton Shepperd","activo":1,"nombreRol":"Registered Nurse"},
+  {"idusuario":2,"usuario":"dspellessy1","nombre":"Dino Spellessy","activo":1,"nombreRol":"Occupational Therapist"},
+  {"idusuario":3,"usuario":"blillico2","nombre":"Bonny Lillico","activo":1,"nombreRol":"Analyst Programmer"},
+  {"idusuario":4,"usuario":"reddoes3","nombre":"Rochette Eddoes","activo":0,"nombreRol":"Web Designer I"},
+  {"idusuario":5,"usuario":"shathwood4","nombre":"Skipper Hathwood","activo":1,"nombreRol":"Graphic Designer"},
+  {"idusuario":6,"usuario":"lbrignall5","nombre":"Lyman Brignall","activo":0,"nombreRol":"Analog Circuit Design manager"},
+  {"idusuario":7,"usuario":"nvennings6","nombre":"Nikaniki Vennings","activo":0,"nombreRol":"Graphic Designer"},
+  {"idusuario":8,"usuario":"jgarahan7","nombre":"Jacinda Garahan","activo":0,"nombreRol":"Data Coordiator"},
+  {"idusuario":9,"usuario":"vfilippello8","nombre":"Verena Filippello","activo":0,"nombreRol":"Clinical Specialist"},
+  {"idusuario":10,"usuario":"whaworth9","nombre":"Weber Haworth","activo":1,"nombreRol":"Media Manager I"}]

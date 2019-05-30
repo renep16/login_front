@@ -2,7 +2,7 @@
   "name": "login_front",
   "version": "0.1.0",
   "private": true,
-  "homepage" : "https://sv3.net.ve/login",
+  "homepage": "https://sv3.net.ve/login",
   "dependencies": {
     "@reach/router": "^1.1.1",
     "bootstrap": "^4.3.1",

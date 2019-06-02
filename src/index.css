@@ -21,3 +21,7 @@ code {
 .navbar-text{
   padding: .5rem
 }
+
+.hide{
+  display: none !important
+}

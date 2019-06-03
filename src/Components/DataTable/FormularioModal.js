@@ -43,21 +43,31 @@ class FormularioModal extends Component {
     const idItem = this.props.idItem;
     if (idItem !== 0) {
       this.setState({ estadoForm: 2 });
-      fetch('./usuarios.json')
-        .then(data => data.json())
-        .then(data => {
-          const item = data[0];
-          this.setState({
-            usuario: item['usuario'],
-            clave: '',
-            persona: item['nombre'],
-            rol: item['idrol'],
-            activo: (item['activo'] === 1) ? true : false,
-            validUsuario: true,
-            validClave: true
-          });
-        })
-        .catch(error => console.log(error));
+      //se hace llamada a la API para buscar mas info de ese usuario
+      // fetch('./usuarios.json')
+      //   .then(data => data.json())
+      //   .then(data => {
+      //     const item = data[0];
+      //     this.setState({
+      //       usuario: item['usuario'],
+      //       clave: '',
+      //       persona: item['nombre'],
+      //       rol: item['idrol'],
+      //       activo: (item['activo'] === 1) ? true : false,
+      //       validUsuario: true,
+      //       validClave: true
+      //     });
+      //   })
+      //   .catch(error => console.log(error));
+      this.setState({
+        usuario: idItem['usuario'],
+        clave: '',
+        persona: idItem['nombre'],
+        rol: idItem['idrol'],
+        activo: (idItem['activo'] === 1) ? true : false,
+        validUsuario: true,
+        validClave: true
+      });
     }
 
   }

@@ -19,12 +19,12 @@ export default class Busqueda extends Component {
                   value={this.props.criterioBusqueda}
                   onChange={this.props.onChange}
                 />
-                <InputGroupAddon addonType="append"><Button onClick={this.props.limpiarTabla}>Limpiar</Button></InputGroupAddon>
+                <InputGroupAddon addonType="append"><Button onClick={this.props.onSubmit} color="primary">Buscar</Button></InputGroupAddon>
               </InputGroup>
             </FormGroup>
           </Col>
           <Col md={3}>
-            <Button color="primary" onClick={this.props.getTodos}>Todos</Button>
+            <Button onClick={this.props.limpiarTabla}>Limpiar</Button>
             {' '}
             <Button color="success" className="ml-1" onClick={this.props.agregarItem}><FaPlusCircle /> Nuevo</Button>
           </Col>

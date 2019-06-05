@@ -1,3 +1,9 @@
+Login y gestión de usuarios en ReactJS y reactstrap para interfáz gráfica
+
+## API de uso en PHP
+
+## Created Project Info
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts

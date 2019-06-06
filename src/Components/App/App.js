@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
+import {BrowserRouter as Router} from 'react-router-dom';
+
 import Login from '../Login/Login';
 import Principal from '../Principal/Principal';
 
-import cookie from 'react-cookies'
+import cookie from 'react-cookies';
 
 //config file
 import configuracion from '../../config/configuracion.json';
@@ -66,11 +68,13 @@ class App extends Component {
       <div>
         {
           (this.state.usuario) ? (
-            <Principal
-              usuario={this.state.usuario}
-              menu={this.state.opciones}
-              cerrarSesion={this.cerrarSesion}
-            />
+            <Router basename="/login">
+              <Principal
+                usuario={this.state.usuario}
+                menu={this.state.opciones}
+                cerrarSesion={this.cerrarSesion}
+              />
+            </Router>
           ) : (
               <Login asignarUsuario={this.asignarUsuario} />
             )

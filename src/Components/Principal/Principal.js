@@ -1,6 +1,6 @@
 //React imports
 import React, { Component } from 'react';
-import { Router } from "@reach/router";
+import { Route } from "react-router-dom";
 
 //My components
 import Menu from '../Menu/Menu';
@@ -11,7 +11,7 @@ import Usuarios from '../Usuarios/Usuarios';
 import './Principal.css';
 
 export default class Principal extends Component {
-  
+
   render() {
     const usuario = this.props.usuario;
     return (
@@ -21,10 +21,12 @@ export default class Principal extends Component {
           cerrarSesion={this.props.cerrarSesion}
         />
         <section className="container contenido mt-3">
-          <Router basename={'/login'}>
-            <Bienvenida path={`${process.env.PUBLIC_URL}/`} usuario={usuario} default  />
-            <Usuarios registerUser={this.registerUser} path={`${process.env.PUBLIC_URL}/usuarios`} />
-          </Router>
+
+          <Route path="/" exact render={(props) => <Bienvenida {...props} usuario={usuario} />} />
+          <Route path="/usuarios/" component={Usuarios} />
+          {/* <Bienvenida path={`${process.env.PUBLIC_URL}/`} usuario={usuario} />
+            <Usuarios path={`${process.env.PUBLIC_URL}/usuarios`} /> */}
+
         </section>
       </div >
     )

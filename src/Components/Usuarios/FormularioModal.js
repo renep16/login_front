@@ -15,8 +15,12 @@ import {
   FormText
 } from "reactstrap";
 
+import configuracion from '../../config/configuracion.json';
+import PrompAceptar from '../PrompAceptar.js';
+
 //Origninal State
 const originalState = {
+  idItem: 0,
   usuario: '',
   clave: '',
   persona: '',
@@ -25,7 +29,9 @@ const originalState = {
   validUsuario: true,
   validClave: true,
   usuarioExiste: false,
-  estadoForm: 1 //estado puede ser 1 agregar, 2 consultar, 3 modificar
+  estadoForm: 1, //estado puede ser 1 agregar, 2 consultar, 3 modificar
+  roles: [],
+  eliminarModal: false
 }
 
 const validacionUsuario = /^[0-9a-zA-Z]+$/;
@@ -40,36 +46,50 @@ class FormularioModal extends Component {
 
   componentDidMount() {
     this.setState(originalState);
-    const idItem = this.props.idItem;
-    if (idItem !== 0) {
-      this.setState({ estadoForm: 2 });
-      //se hace llamada a la API para buscar mas info de ese usuario
-      // fetch('./usuarios.json')
-      //   .then(data => data.json())
-      //   .then(data => {
-      //     const item = data[0];
-      //     this.setState({
-      //       usuario: item['usuario'],
-      //       clave: '',
-      //       persona: item['nombre'],
-      //       rol: item['idrol'],
-      //       activo: (item['activo'] === 1) ? true : false,
-      //       validUsuario: true,
-      //       validClave: true
-      //     });
-      //   })
-      //   .catch(error => console.log(error));
-      this.setState({
-        usuario: idItem['usuario'],
-        clave: '',
-        persona: idItem['nombre'],
-        rol: idItem['idrol'],
-        activo: (idItem['activo'] === 1) ? true : false,
-        validUsuario: true,
-        validClave: true
-      });
-    }
 
+    this.getRoles();
+    if (this.props.idItem !== 0) {
+      this.setState({ estadoForm: 2, idItem: this.props.idItem });
+      //se hace llamada a la API para buscar mas info de ese usuario
+      fetch(`${configuracion['api_node']}usuario/${this.props.idItem}`)
+        .then(data => data.json())
+        .then(data => {
+          // console.log(data[0]);
+          const item = data[0];
+          this.setState({
+            usuario: item['usuario'],
+            clave: '',
+            persona: item['nombre'],
+            rol: item['idrol'],
+            activo: (item['activo'] === 1) ? true : false,
+            validUsuario: true,
+            validClave: true
+          });
+        })
+        .catch(error => console.log(error));
+    }
+  }
+
+  getRoles = () => {
+    fetch(`${configuracion['api_node']}rolusuario`)
+      .then(data => data.json())
+      .then(data => {
+        this.setState({ roles: data });
+      })
+      .catch(error => console.log(error));
+  }
+
+  verificarUsuarioNuevo = (e) => {  //verifica si el usuario no esta previamente registrado
+    const usuario = e.target.value;
+    fetch(`${configuracion['api_node']}existeUsuario/${usuario}`)
+      .then(data => {
+        if (data.status === 200) {
+          this.setState({ usuarioExiste: true });
+        } else {
+          this.setState({ usuarioExiste: false });
+        }
+      })
+      .catch(error => console.log(error));
   }
 
   handleChange = (e) => {
@@ -108,13 +128,143 @@ class FormularioModal extends Component {
     }
   }
 
+  // agregar - modificar
+  agregarUsuario = () => {
+    //post para enviar datos del form
+    if (this.state.validClave && this.state.validUsuario && !this.state.usuarioExiste) {
+      const options = {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        method: 'POST',
+        body: JSON.stringify({
+          idusuario: null,
+          usuario: this.state.usuario,
+          clave: this.state.clave,
+          nombre: this.state.persona,
+          activo: this.state.activo,
+          idrol: this.state.rol
+        })
+      };
+      fetch(`${configuracion['api_node']}usuario`, options)
+        .then(data => {
+          if (data.ok && data.status === 203) {
+            throw data.statusText;
+          } else if (!data.ok) {
+            throw data.body;
+          } else {
+            data.json()
+              .then(data => {
+                // this.setState(originalState);
+
+                const item = data[0];
+                this.setState({
+                  idItem: item['idusuario'],
+                  usuario: item['usuario'],
+                  clave: '',
+                  persona: item['nombre'],
+                  rol: item['idrol'],
+                  activo: (item['activo'] === 1) ? true : false,
+                  validUsuario: true,
+                  validClave: true,
+                  estadoForm: 2
+                });
+
+                this.props.aceptarForm();
+              })
+          }
+        })
+        .catch(error => console.log(error));
+    }
+  }
+
+  modificarUsuario = () => {
+    //post para enviar datos del form
+    let objetoUpdate = null;
+    if (this.state.clave.length > 0) {
+      objetoUpdate = {
+        usuario: this.state.usuario,
+        clave: this.state.clave,
+        nombre: this.state.persona,
+        activo: this.state.activo,
+        idrol: this.state.rol
+      }
+    } else {
+      objetoUpdate = {
+        usuario: this.state.usuario,
+        nombre: this.state.persona,
+        activo: this.state.activo,
+        idrol: this.state.rol
+      }
+    }
+    const options = {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      method: 'PUT',
+      body: JSON.stringify(objetoUpdate)
+    };
+    fetch(`${configuracion['api_node']}usuario/${this.state.idItem}`, options)
+      .then(data => {
+        if (data.ok && data.status === 203) {
+          throw data.statusText;
+        } else if (!data.ok) {
+          throw data.body;
+        } else {
+          data.json()
+            .then(data => {
+              // this.setState(originalState);
+
+              const item = data[0];
+              this.setState({
+                idItem: item['idusuario'],
+                usuario: item['usuario'],
+                clave: '',
+                persona: item['nombre'],
+                rol: item['idrol'],
+                activo: (item['activo'] === 1) ? true : false,
+                validUsuario: true,
+                validClave: true,
+                estadoForm: 2
+              });
+              this.props.modificarForm();
+            })
+        }
+      })
+      .catch(error => console.log(error));
+  }
+
+  eliminarUsuario = () => {
+    const options = {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      method: 'DELETE'
+    };
+    fetch(`${configuracion['api_node']}usuario/${this.state.idItem}`, options)
+      .then(data => {
+        if (!data.ok) {
+          throw data.body;
+        } else {
+          this.props.eliminarForm();
+        }
+      })
+      .catch(error => console.log(error));
+  }
+
   handleSubmit = (e) => {
     e.preventDefault();
-    if (this.state.validClave && this.state.validUsuario) {
-      this.setState(originalState);
-      this.props.aceptarForm();
-    }
+    switch (this.state.estadoForm) {
+      case 1:
+        this.agregarUsuario();
+        break;
+      case 3:
+        this.modificarUsuario()
+        break;
 
+      default:
+        break;
+    }
   }
 
   modificarForm = () => {
@@ -127,12 +277,16 @@ class FormularioModal extends Component {
         this.props.cancelarForm();
         break;
       case 2:
-        this.props.eliminarForm();
+        this.setState({ eliminarModal: true });
         break;
       default:
         this.setState({ estadoForm: 2 });
         break;
     }
+  }
+
+  toggleEliminarModal = ()=>{
+    this.setState({ eliminarModal: !this.state.eliminarModal });
   }
 
   render() {
@@ -151,7 +305,10 @@ class FormularioModal extends Component {
         titulo += 'Agregar';
         break;
     }
+    const rolOpciones = this.state.roles.map(item => <option key={'rol-' + item.idrol} value={item.idrol}>{item.nombre}</option>)
+
     return (
+      <>
       <Modal isOpen={this.props.muestraForm} toggle={this.props.toggleForm} size="lg" centered backdrop="static">
         <Form onSubmit={this.handleSubmit}>
           <ModalHeader toggle={this.props.toggleForm}>{titulo}</ModalHeader>
@@ -167,11 +324,12 @@ class FormularioModal extends Component {
                     placeholder="Ingrese nombre de usuario"
                     value={this.state.usuario}
                     onChange={this.handleChange}
+                    onBlur={this.verificarUsuarioNuevo}
                     required
                     minLength="5"
                     maxLength="15"
-                    valid={(this.state.validUsuario && (this.state.usuario !== ''))}
-                    invalid={!this.state.validUsuario}
+                    valid={(this.state.validUsuario && (this.state.usuario !== '') && !this.state.usuarioExiste)}
+                    invalid={!this.state.validUsuario || this.state.usuarioExiste}
                     disabled={(this.state.estadoForm !== 1)}
                   />
                   <FormFeedback className={(this.state.usuarioExiste) ? 'hide' : ''}>Formato inválido</FormFeedback>
@@ -210,7 +368,6 @@ class FormularioModal extends Component {
                     value="1"
                     checked={this.state.activo}
                     onChange={this.handleChange}
-                    required
                     disabled={(this.state.estadoForm === 2)}
                   />
                   <Label for="activoForm" check>Activo</Label>
@@ -245,8 +402,7 @@ class FormularioModal extends Component {
                     required
                     disabled={(this.state.estadoForm === 2)}
                   >
-                    <option value="1">Administrador</option>
-                    <option value="2">Vendedor</option>
+                    {rolOpciones}
                   </Input>
                 </FormGroup>
               </Col>
@@ -273,6 +429,14 @@ class FormularioModal extends Component {
           </ModalFooter>
         </Form>
       </Modal>
+      <PrompAceptar
+        muestraPromp={this.state.eliminarModal}
+        togglePromp={this.toggleEliminarModal}
+        titulo="Eliminar"
+        pregunta="¿Seguro que desea eliminar al usuario"
+        aceptarPromp={this.eliminarUsuario}
+       />
+      </>
     );
   }
 }

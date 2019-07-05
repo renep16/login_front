@@ -21,11 +21,13 @@ export default class Tabla extends Component {
     //se crean las filas recorriendo los objetos
     const filas = this.props.data.map((item, index1) => {
       let values= Object.values(item);
+      const keyValue = values[0];
+      values.shift();
       const tds = values.map((subItem, index2)=>{
         return(<td key={index1+'-'+index2} onClick={()=>this.props.onItemClick(item)}>{subItem}</td>);
       });
       return (
-        <tr key={values[0]} >
+        <tr key={keyValue} >
           {tds}
         </tr>
       );

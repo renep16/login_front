@@ -1,3 +1,4 @@
 {
-  "api_url": "https://sv3.net.ve/login/api/"
+  "api_url": "https://sv3.net.ve/login/api/",
+  "api_node": "http://localhost:3678/api/"
 }

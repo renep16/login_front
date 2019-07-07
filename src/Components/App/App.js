@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {BrowserRouter as Router} from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
 
 import Login from '../Login/Login';
 import Principal from '../Principal/Principal';
@@ -16,43 +16,43 @@ class App extends Component {
       usuario: null,
       opciones: []
     }
-
-    this.asignarUsuario = this.asignarUsuario.bind(this);
-    this.cerrarSesion = this.cerrarSesion.bind(this);
   }
 
   componentWillMount() {
     const userCoockie = cookie.load('usuario');
     if (userCoockie) {
       this.setState({ usuario: userCoockie });
-      fetch(`${configuracion['api_url']}sesiones/buscar_menu.php`, {
-        method: 'POST',
-        body: JSON.stringify({
-          idrol: userCoockie['idrol']
-        })
-      })
-        .then(data => data.json())
-        .then(data => {
-          this.setState({ opciones: data });
-        })
-        .catch(errorMessage => {
-          console.log(errorMessage);
-        });
+      this.buscarMenu(userCoockie['idrol']);
     }
   }
 
-  asignarUsuario(usuario) {
+  buscarMenu = (idrol) => {
+    fetch(`${configuracion['api_node']}buscarMenu/${idrol}`, {
+      method: 'GET'
+    })
+      .then(data => data.json())
+      .then(data => {
+        this.setState({ opciones: data });
+      })
+      .catch(errorMessage => {
+        console.log(errorMessage);
+      });
+  }
+
+  asignarUsuario = (usuario) => {
     if (usuario) {
       this.setState({
-        usuario: usuario['datos_usuario'],
-        opciones: usuario['opciones']
+        usuario: usuario['datos_usuario']
+      },()=>{
+        this.buscarMenu(this.state.usuario.idrol);
       });
+      
       cookie.save('usuario', usuario['datos_usuario'], { path: '/' })
     }
 
   }
 
-  cerrarSesion() {
+  cerrarSesion = () => {
     fetch(`${configuracion['api_url']}sesiones/cerrar_sesion.php`)
       .then(data => {
         this.setState({ usuario: null, opciones: null });

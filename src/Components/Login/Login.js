@@ -19,12 +19,9 @@ export default class Login extends Component {
       disabled: true,
       cargando:false
     }
-
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleChange(e) {
+  handleChange = (e)=> {
     this.setState({ errorMessage: null });
     const target = e.target;
     if (target.name === 'recordar_clave') {
@@ -43,7 +40,7 @@ export default class Login extends Component {
     }
   }
 
-  handleSubmit(e) {
+  handleSubmit = (e)=> {
     this.setState({ 
       errorMessage: null,
       disabled: true,
@@ -51,17 +48,15 @@ export default class Login extends Component {
     });
     e.preventDefault();
 
-    // const options = {
-    //   method: "POST",
-    //   body: JSON.stringify(this.state),
-    //   headers: {
-    //     'Content-Type': 'application/json'
-    //   },
-    //   mode: 'cors'
-    // }
+    const options = {
+      method: "POST",
+      body: JSON.stringify(this.state),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
 
-    fetch(`${configuracion['api_url']}sesiones/iniciar_sesion.php`,
-      { method: 'POST', body: JSON.stringify(this.state) })
+    fetch(`${configuracion['api_node']}iniciarSesion`,options)
       .then(data => {
         const res_code = data.status;
         if (res_code === 200) {
